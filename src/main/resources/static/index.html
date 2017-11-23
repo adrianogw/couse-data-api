@@ -1,0 +1,72 @@
+<html ng-app="helloApp">
+<head>
+  <title>HelloWorld</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  <script src="ui-bootstrap-tpls-2.5.0.min.js"></script>
+  <script src="topicApplication.js"></script>
+</head>
+ 
+<body>
+  <div class="page-header">
+    <h1>Simple Topic menu</h1>
+  </div>
+  
+  <div ng-controller="HelloCtrl">
+  
+    <script type="text/ng-template" id="alert.html">
+       <div ng-transclude></div>
+    </script>
+    
+    <div uib-alert template-url="alert.html" style="background-color:#fa39c3;color:white">{{errorMessage}} {{message}}</div>
+    
+	<table>
+	    <tr>
+	        <td width="100">ID:</td>
+	        <td><input type="text" id="id" ng-model="topic.id" /></td>
+	    </tr>
+	    <tr>
+	        <td width="100">Name:</td>
+	        <td><input type="text" id="name" ng-model="topic.name" /></td>
+	    </tr>
+	    <tr>
+	        <td width="100">Description:</td>
+	        <td><input type="text" id="description" ng-model="topic.description" /></td>
+	    </tr>
+	</table>
+ 	
+ 	<br/>
+ 		
+	<button type="button" class='btn btn-default' ng-click="addTopic()">Add Topic</button>
+	<button type="button" class='btn btn-default' ng-click="updateTopic()">Update Topic</button>
+
+    <h2>All Topics </h2>
+    
+	<table class="table table-bordered">
+	  <thead>
+	    <tr>
+	      <th scope="col">ID</th>
+	      <th scope="col">Name</th>
+	      <th scope="col">Description</th>
+	      <th scope="col">Get topic information</th>
+	      <th scope="col">Delete topic information</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+		    <tr ng-repeat="itTopic in topics">
+		      <th scope="row">{{itTopic.id}}</th>
+		      <td>{{itTopic.name}}</td>
+		      <td>{{itTopic.description}}</td>
+		      <td>
+		      	<button type="button" class='btn btn-default' ng-click="getTopic(itTopic.id)">Get Topic</button>
+		      </td>	
+		      <td>
+		      	<button type="button" class='btn btn-default' ng-click="deleteTopic(itTopic.id)">Delete Topic</button>
+		      </td>	
+		    </tr>
+	  </tbody>
+	</table>    
+  </div>
+  
+</body>
+</html>
