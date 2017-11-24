@@ -4,6 +4,7 @@
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
   <script src="ui-bootstrap-tpls-2.5.0.min.js"></script>
+  <script src="angular-confirm.min.js"></script>
   <script src="topicApplication.js"></script>
 </head>
  
@@ -58,7 +59,9 @@
     </script>
     
 	<div ng-show="errorMessage || message || topic">
-	    <div uib-alert template-url="alert.html" style="background-color:#fa39c3;color:white">{{errorMessage}} {{message}} {{ topic }}</div>
+	    <div uib-alert template-url="alert.html" style="background-color:#fa39c3;color:white">
+	    	{{errorMessage}} {{message}} {{ topic }}
+	    </div>
 	</div>
     
  	<br/>
@@ -86,7 +89,7 @@
 		      	<button type="button" class='btn btn-default' ng-click="openModalDialog('UPDATE', itTopic)">Update Topic</button>
 		      </td>	
 		      <td>
-		      	<button type="button" class='btn btn-default' ng-click="deleteTopic(itTopic.id)">Delete Topic</button>
+		      	<button type="button" class='btn btn-default' confirm="Are you sure?" ng-click="deleteTopic(itTopic.id)" >Delete Topic</button>
 		      </td>	
 		    </tr>
 	  </tbody>

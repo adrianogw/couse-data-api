@@ -2,7 +2,10 @@
  * Script containing the service methods and controller methods to support all the CRUD operations for the Topic subject.
  */
 
-var helloApp = angular.module( "helloApp", ['ui.bootstrap'] );
+//Simply add a dependency to the 'angular-confirm' module coming from angular-confirm.min.
+//Simply add a dependency to the 'ui.bootstrap' module coming from ui-bootstrap-tpls-2.5.0.min.
+var helloApp = angular.module( "helloApp", ['ui.bootstrap', 'angular-confirm']);
+
 
 helloApp.service('TopicService', [ '$http', function($http) {
 
@@ -116,6 +119,7 @@ helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', 
 	}  
 
 	$scope.deleteTopic = function (id) {
+		
 		TopicService.deleteTopic(id)
 		.then (function success(response) {
 			$scope.message = 'Topic deleted!';
@@ -166,6 +170,15 @@ helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', 
 						}
 					}
 				});
+				
+				//Event fired when the dialog is rendered.
+				modalInstance.rendered.then(function() {
+					if (!selectedTopic || !selectedTopic.id)
+						document.getElementById("id").focus();
+					else
+						document.getElementById("name").focus();
+
+				});
 
 				//Called when the modalInstance is closed. In our case here, it is fired by the $ctrl.ok inside the ModalInstanceCtrl
 				modalInstance.result.then(function (topicFilled) {
@@ -192,7 +205,7 @@ helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', 
  * Modal dialog controller. It is not the same controller above. It is exclusive to control the dialog models.
  */
 
-angular.module('ui.bootstrap').controller('ModalInstanceCtrl', function ($uibModalInstance, currentTopic) {
+helloApp.controller('ModalInstanceCtrl', function ($uibModalInstance, currentTopic) {
 	
 	var $ctrl = this;
 
@@ -219,19 +232,22 @@ angular.module('ui.bootstrap').controller('ModalInstanceCtrl', function ($uibMod
 		
 		$ctrl.errorMessage = null;
 		
-		if (!$ctrl.topic.id)
+		if (!$ctrl.topic || !$ctrl.topic.id)
 		{
 			$ctrl.errorMessage = 'Please, specify a topic ID!';	
+			document.getElementById("id").focus();
 		}
 		
 		if (!$ctrl.topic.name)
 		{
 			$ctrl.errorMessage = 'Please, specify a topic name!';	
+			document.getElementById("name").focus();
 		}
 
 		if (!$ctrl.topic.description)
 		{
 			$ctrl.errorMessage = 'Please, specify a topic description!';	
+			document.getElementById("description").focus();
 		}
 	};
 	
