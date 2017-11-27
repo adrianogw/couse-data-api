@@ -1,11 +1,8 @@
-package io.javabrains.springbootstarter.topic;
+package io.agw.springbootstarter.topic;
 
 import java.util.List;
 
-import javax.swing.text.html.parser.Entity;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +27,9 @@ public class TopicController {
 		
 		if (topic == null || StringUtils.isEmpty(topic.getId()))
 		{
-			throw new Exception("Topic not found!");
+			throw new io.agw.ResourceNotFoundException("Resource not found!",
+					"Verify if the specified ID really exists!", 
+					"Specified ID: "+ id);
 		}
 		
 		return topic;

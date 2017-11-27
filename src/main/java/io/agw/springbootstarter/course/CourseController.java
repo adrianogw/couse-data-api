@@ -1,4 +1,4 @@
-package io.javabrains.springbootstarter.course;
+package io.agw.springbootstarter.course;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.javabrains.springbootstarter.topic.Topic;
+import io.agw.springbootstarter.topic.Topic;
 
 @RestController
 public class CourseController {

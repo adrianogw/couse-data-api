@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.javabrains.springbootstarter.course;
+package io.agw.springbootstarter.course;
 
 import java.util.List;
 

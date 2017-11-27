@@ -1,4 +1,4 @@
-package io.javabrains;
+package io.agw;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
