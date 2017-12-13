@@ -6,6 +6,14 @@
 //Simply add a dependency to the 'ui.bootstrap' module coming from ui-bootstrap-tpls-2.5.0.min.
 var helloApp = angular.module( "helloApp", ['ui.bootstrap', 'angular-confirm']);
 
+helloApp.config(['$httpProvider', function($httpProvider) {
+    if (!$httpProvider.defaults.headers.common) {
+        $httpProvider.defaults.headers.common = {};
+    }
+    $httpProvider.defaults.headers.common["Cache-Control"] = "no-cache";
+    $httpProvider.defaults.headers.common.Pragma = "no-cache";
+    $httpProvider.defaults.headers.common["If-Modified-Since"] = "0";
+}]);
 
 helloApp.service('TopicService', [ '$http', function($http) {
 
@@ -135,17 +143,12 @@ helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', 
 
 	$scope.getAllTopics = function () {
 		
-		alert('GetAll1');
 		TopicService.getAllTopics()
 		.then(function success(response) {
-			alert('GetAll2');
 			$scope.topics = response.data;
-			alert(response.data);
-
 			$scope.errorMessage = '';
 		},
 		function error (response) {
-			alert('GetAll3');
 			$scope.message='';
 			$scope.errorMessage = 'Error getting topics!';
 		});
