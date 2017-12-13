@@ -8,6 +8,15 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+/**
+ *  SLF4J is a façade for commonly used logging frameworks, 
+ *  such as Java Util Logging, Log4J 2, and Logback. 
+ *  By writing against SLF4J, our code remains decoupled from Logback, thus providing us the flexibility to plug-in a different logging framework, if required later.
+ *  Source: https://springframework.guru/using-logback-spring-boot/
+ */
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -23,16 +32,26 @@ import io.agw.springbootstarter.rabbitmq.RabbitMQSender;
 @Service
 public class TopicService {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private TopicRepository topicRepository;
 	
 	@Resource
 	private RabbitMQSender rabbitMQSender;
 
-	public List<Topic> getAllTopics() {
+	public List<Topic> getAllTopics(Boolean sortByName) {
 		
 		List<Topic> topics = new ArrayList<Topic>();
-		topicRepository.findAll().forEach(topics::add);
+		
+		if (Boolean.TRUE == sortByName)
+		{
+			topicRepository.findAllSortedByNameAsc().forEach(topics::add);
+		}
+		else
+		{
+			topicRepository.findAll().forEach(topics::add);
+		}
 		return topics;
 	}
 
@@ -42,6 +61,7 @@ public class TopicService {
 		
 		if (topic == null || StringUtils.isEmpty(topic.getId()))
 		{
+			logger.debug("Resource not found! Specified ID: "+ id);
 			throw new io.agw.springbootstarter.exceptions.ResourceNotFoundException("Resource not found!",
 					"Verify if the specified ID really exists!", 
 					"Specified ID: "+ id);

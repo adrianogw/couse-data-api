@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.agw.springbootstarter.rabbitmq.RabbitCredentials;
 
 @RestController
+@RequestMapping("/topics")
 public class TopicController {
 
 	@Autowired
@@ -22,10 +24,12 @@ public class TopicController {
 	@Autowired
 	private Environment env;
 	
-	@RequestMapping("/topics")
-	public List<TopicDto> getAllTopics() {
+	@RequestMapping(method=RequestMethod.GET, value="")
+	public List<TopicDto> getAllTopics(
+			@RequestParam(required = false, defaultValue = "false") final Boolean sortByName) 
+	{
 		
-		List<Topic> topics = topicService.getAllTopics();
+		List<Topic> topics = topicService.getAllTopics(sortByName);
 		
 		List<TopicDto> topicsDtoList = new ArrayList<TopicDto>();
 		
@@ -36,7 +40,7 @@ public class TopicController {
 		return topicsDtoList;
 	}
 
-	@RequestMapping("/topics/{id}")
+	@RequestMapping(method=RequestMethod.GET, value="/{id}")
 	public TopicDto getTopic(@PathVariable String id) throws Exception {
 		
 		Topic topic = topicService.getTopic(id);
@@ -44,7 +48,7 @@ public class TopicController {
 		return TopicConverter.toTopicDto(topic);
 	}
 	
-	@RequestMapping(method=RequestMethod.POST, value="/topics")
+	@RequestMapping(method=RequestMethod.POST, value="")
 	public TopicDto addTopic(@RequestBody TopicDto topicDto) throws Exception{
 
 		Topic topic = topicService.addTopic(TopicConverter.toTopicDb(topicDto));
@@ -52,7 +56,7 @@ public class TopicController {
 		return TopicConverter.toTopicDto(topic);
 	}
 	
-	@RequestMapping(method=RequestMethod.PUT, value="/topics/{id}")
+	@RequestMapping(method=RequestMethod.PUT, value="/{id}")
 	public TopicDto updateTopic(@RequestBody TopicDto topicDto, @PathVariable String id) throws Exception {
 		
 		Topic topic = topicService.updateTopic(id, TopicConverter.toTopicDb(topicDto));
@@ -60,12 +64,12 @@ public class TopicController {
 		return TopicConverter.toTopicDto(topic);
 	}
 	
-	@RequestMapping(method=RequestMethod.DELETE, value="/topics/{id}")
+	@RequestMapping(method=RequestMethod.DELETE, value="/{id}")
 	public void deleteTopic(@PathVariable String id) throws Exception {
 		topicService.deleteTopic(id);
 	}
 	
-	@RequestMapping(method=RequestMethod.GET, value="/topics/authRabbitMq/{authToken}")
+	@RequestMapping(method=RequestMethod.GET, value="/authRabbitMq/{authToken}")
 	public RabbitCredentials getRabbitMq(@PathVariable String authToken) throws Exception {
 		
 		//TO-DO: pick the credentials from a properties file like Hibernate config file.
