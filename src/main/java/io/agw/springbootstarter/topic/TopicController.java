@@ -4,18 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.agw.springbootstarter.rabbitmq.RabbitCredentials;
+
 @RestController
 public class TopicController {
 
 	@Autowired
 	private TopicService topicService;
-
+	
+	@Autowired
+	private Environment env;
+	
 	@RequestMapping("/topics")
 	public List<TopicDto> getAllTopics() {
 		
@@ -57,5 +63,15 @@ public class TopicController {
 	@RequestMapping(method=RequestMethod.DELETE, value="/topics/{id}")
 	public void deleteTopic(@PathVariable String id) throws Exception {
 		topicService.deleteTopic(id);
+	}
+	
+	@RequestMapping(method=RequestMethod.GET, value="/topics/authRabbitMq/{authToken}")
+	public RabbitCredentials getRabbitMq(@PathVariable String authToken) throws Exception {
+		
+		//TO-DO: pick the credentials from a properties file like Hibernate config file.
+		String login = env.getProperty("rabbitMq.login");
+		String passcode = env.getProperty("rabbitMq.passcode");
+				
+		return new RabbitCredentials(login, passcode);
 	}
 }

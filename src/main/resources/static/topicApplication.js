@@ -36,7 +36,7 @@ helloApp.service('TopicService', [ '$http', function($http) {
 		});
 	}
 
-	this.updateTopic = function updateUser(id, name, description) {
+	this.updateTopic = function updateTopic(id, name, description) {
 		return $http({
 			method : 'PUT',
 			url : 'topics/' + id,
@@ -61,6 +61,15 @@ helloApp.service('TopicService', [ '$http', function($http) {
 			url : 'topics'
 		});
 	}        
+	
+	this.getRabbitMqCredentials = function getRabbitMqCredentials(authToken) {
+		
+		return $http({
+			method : 'GET',
+			url : 'topics/authRabbitMq/' + authToken
+		});
+	}
+	
 } ]);    
 
 helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', '$document',
@@ -68,9 +77,12 @@ helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', 
 
 	$scope.topic = null;
 	
+	//TO-DO: There is no rest API to generate a token yet.
+	$scope.authToken = 'fakeToken';
+	
 	$scope.getTopic = function (id) {
-		TopicService.getTopic(id)
-		.then(function success(response) {
+		TopicService.getTopic(id).then(
+		function success(response) {
 			$scope.topic = response.data;
 			$scope.message='';
 			$scope.errorMessage = '';
@@ -154,7 +166,7 @@ helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', 
 		});
 	}  
 
-	$scope.createRabbitMqStompReceiver = function () {
+	$scope.configureRabbitMqStompReceiver = function (rabbitCredentials) {
 
 		// Stomp.js boilerplate
 		var ws = new WebSocket('ws://' + window.location.hostname + ':15674/ws');
@@ -179,8 +191,21 @@ helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', 
 		  console.log('on_error');
 		};
 
-		client.connect('guest', 'guest', on_connect, on_error, '/');
+		client.connect(rabbitCredentials.login, rabbitCredentials.passcode, on_connect, on_error, '/');
 	}  
+
+	$scope.createRabbitMqStompReceiver = function () {
+		
+ 	    console.log('Creating RabbitMqStompReceiver...');
+		TopicService.getRabbitMqCredentials($scope.authToken).then(
+		function success(response) {
+	 	    console.log('Configuring RabbitMqStompReceiver...');
+			$scope.configureRabbitMqStompReceiver(response.data);
+		},
+		function error (response) {
+			$scope.errorMessage = 'Error getting RabbitMQ credentials!';
+		});
+	}
 	
 	$scope.getAllTopics();
 	
