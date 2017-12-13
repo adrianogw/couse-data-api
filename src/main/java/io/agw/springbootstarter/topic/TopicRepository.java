@@ -21,7 +21,7 @@ public interface TopicRepository extends CrudRepository<Topic, String>, TopicRep
 	@Query("select t from Topic t where t.name = :name")
 	public List<Topic> findByName(@Param("name") String name);
 	
-	@Query("select t from Topic t where concat('topics/',t.id) = :resourceUri")
-	public List<Topic> findByResourceUri(@Param("resourceUri") String resourceUri);
+	@Query("select t from Topic t where concat('/topics/',t.id) = :resourceUri")
+	public Topic findByResourceUri(@Param("resourceUri") String resourceUri);
 	
 }

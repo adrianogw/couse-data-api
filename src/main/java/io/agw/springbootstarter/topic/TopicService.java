@@ -70,6 +70,21 @@ public class TopicService {
 		return topic;
 	}
 
+	public Topic getTopicByResourceUri(String resourceUri) throws Exception {
+
+		Topic topic = topicRepository.findByResourceUri(resourceUri);
+		
+		if (topic == null || StringUtils.isEmpty(topic.getId()))
+		{
+			logger.debug("Resource not found! Specified resourceUri: "+ resourceUri);
+			throw new io.agw.springbootstarter.exceptions.ResourceNotFoundException("Resource not found!",
+					"Verify if the specified ID really exists!", 
+					"Specified resourceUri: "+ resourceUri);
+		}
+		
+		return topic;
+	}
+
 	public Topic addTopic(Topic topic) throws Exception{
 		
 		Topic savedTopic = topicRepository.save(topic);

@@ -8,9 +8,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
- * @author rodrigo
+ * @author adrianogw
  *
  */
 
@@ -20,23 +21,32 @@ public class CourseService {
 	@Autowired
 	private CourseRepository courseRepository;
 
-	public List<Course> getAllCourses(String topicId) {
-		List<Course> course = new ArrayList<Course>();
-		courseRepository.findByTopicId(topicId).forEach(course::add);
-		return course;
+	public List<Course> getAllCourses(String topicUri) {
+		List<Course> courses = new ArrayList<Course>();
+		
+		if (StringUtils.isEmpty(topicUri))
+		{
+			courseRepository.findAll().forEach(courses::add);
+		}
+		else
+		{
+			courseRepository.findByTopicUri(topicUri).forEach(courses::add);
+		}
+		
+		return courses;
 	}
 
 	public Course getCourse(String id) {
 		return courseRepository.findOne(id);
 	}
 
-	public void addCourse(Course course) {
-		courseRepository.save(course);
+	public Course addCourse(Course course) {
+		return courseRepository.save(course);
 
 	}
 
-	public void updateCourse(Course course) {
-		courseRepository.save(course);
+	public Course updateCourse(Course course) {
+		return courseRepository.save(course);
 	}
 
 	public void deleteCourse(String id) {

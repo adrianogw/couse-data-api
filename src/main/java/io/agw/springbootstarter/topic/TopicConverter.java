@@ -24,14 +24,4 @@ public class TopicConverter {
 		return topic;
 		
 	}
-	
-	public static Topic merge(Topic topic, TopicDto topicDto)
-	{
-		topic.setId(topicDto.getId());
-		topic.setName(topicDto.getName());
-		topic.setDescription(topicDto.getDescription());
-
-		return topic;
-	}
-	
 }
