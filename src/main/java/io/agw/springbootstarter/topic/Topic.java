@@ -1,10 +1,17 @@
 package io.agw.springbootstarter.topic;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Topic {
+public class Topic implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	@Id
 	private String id;
@@ -15,9 +22,13 @@ public class Topic {
 		
 	}
 	
-	public Topic(String id, String name, String description) {
+	public Topic(String id) {
 		super();
 		this.id = id;
+	}
+
+	public Topic(String id, String name, String description) {
+		this(id);
 		this.name = name;
 		this.description = description;
 	}

@@ -1,4 +1,4 @@
-package io.agw;
+package io.agw.springbootstarter.exceptions;
 
 import org.springframework.http.HttpStatus;
 

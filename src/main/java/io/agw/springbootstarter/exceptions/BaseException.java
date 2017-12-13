@@ -1,6 +1,7 @@
-package io.agw;
+package io.agw.springbootstarter.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 
 public class BaseException extends RuntimeException{
 

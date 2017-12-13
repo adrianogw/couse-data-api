@@ -1,4 +1,4 @@
-package io.agw;
+package io.agw.springbootstarter.exceptions;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,7 +10,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler{
 
 	private ResponseEntity<ExceptionResponse> buildResponseEntity(BaseException ex) {
 		
-		ExceptionResponse response = new ExceptionResponse(ex.getHttpStatus(), ex.getMessage(), ex.getDetails());
+		ExceptionResponse response = new ExceptionResponse(ex);
 
         return new ResponseEntity<ExceptionResponse>(response, response.getHttpStatus());
 	}

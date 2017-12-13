@@ -90,7 +90,7 @@ helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', 
 				$scope.resetTopic();
 				$scope.message = 'Topic added!';
 				$scope.errorMessage = '';
-				$scope.getAllTopics();
+				//$scope.getAllTopics();
 			},
 			function error(response){
 				$scope.errorMessage = 'Error adding topic!';
@@ -110,7 +110,7 @@ helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', 
 					$scope.resetTopic();
 					$scope.message = 'Topic data updated!';
 					$scope.errorMessage = '';
-					$scope.getAllTopics();
+					//$scope.getAllTopics();
 				},
 				function error(response) {
 					$scope.errorMessage = 'Error updating topic!';
@@ -125,7 +125,7 @@ helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', 
 			$scope.message = 'Topic deleted!';
 			$scope.topic = null;
 			$scope.errorMessage='';
-			$scope.getAllTopics();
+			//$scope.getAllTopics();
 		},
 		function error(response) {
 			$scope.errorMessage = 'Error deleting topic!';
@@ -134,19 +134,54 @@ helloApp.controller('HelloCtrl', ['$scope','TopicService', '$uibModal', '$log', 
 	}   
 
 	$scope.getAllTopics = function () {
+		
+		alert('GetAll1');
 		TopicService.getAllTopics()
 		.then(function success(response) {
+			alert('GetAll2');
 			$scope.topics = response.data;
+			alert(response.data);
 
 			$scope.errorMessage = '';
 		},
 		function error (response) {
+			alert('GetAll3');
 			$scope.message='';
 			$scope.errorMessage = 'Error getting topics!';
 		});
 	}  
 
+	$scope.createRabbitMqStompReceiver = function () {
+
+		// Stomp.js boilerplate
+		var ws = new WebSocket('ws://' + window.location.hostname + ':15674/ws');
+	    var client = Stomp.over(ws);
+
+		var on_connect = function() {
+			
+			id = client.subscribe('/topic/queueTopics', on_message);				  
+		};
+
+		var on_message = function(data) {
+			
+		 	console.log('Message received!');
+  	  	 	var resourceStateMessage = JSON.parse(data.body);
+  	  	 	console.log(resourceStateMessage);
+  	  	 	$scope.getAllTopics();
+		};
+
+		var on_error = function(e) {
+			
+		  alert("Socket error "+e);  
+		  console.log('on_error');
+		};
+
+		client.connect('guest', 'guest', on_connect, on_error, '/');
+	}  
+	
 	$scope.getAllTopics();
+	
+	$scope.createRabbitMqStompReceiver();
 
 	//function to open a modal dialog. The controller for the modal dialog is ModalInstanceCtrl (specified below).
 	$scope.openModalDialog = function (crudAction, selectedTopic, size, parentSelector) {
