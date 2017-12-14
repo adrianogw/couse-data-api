@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.agw.springbootstarter.rabbitmq.RabbitCredentials;
+import io.agw.springbootstarter.rabbitmq.RabbitCredentialsDto;
 
 @RestController
 @RequestMapping("/topics")
@@ -70,12 +70,12 @@ public class TopicController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/authRabbitMq/{authToken}")
-	public RabbitCredentials getRabbitMq(@PathVariable String authToken) throws Exception {
+	public RabbitCredentialsDto getRabbitMq(@PathVariable String authToken) throws Exception {
 		
 		//TO-DO: pick the credentials from a properties file like Hibernate config file.
 		String login = env.getProperty("rabbitMq.login");
 		String passcode = env.getProperty("rabbitMq.passcode");
 				
-		return new RabbitCredentials(login, passcode);
+		return new RabbitCredentialsDto(login, passcode);
 	}
 }

@@ -16,13 +16,12 @@ import javax.annotation.Resource;
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import io.agw.springbootstarter.rabbitmq.ChangeType;
-import io.agw.springbootstarter.rabbitmq.RabbitMQSender;
+import io.agw.springbootstarter.rabbitmq.TopicRabbitMqPublisher;
 
 /**
  * @author adrianogw
@@ -38,7 +37,7 @@ public class TopicService {
 	private TopicRepository topicRepository;
 	
 	@Resource
-	private RabbitMQSender rabbitMQSender;
+	private TopicRabbitMqPublisher topicRabbitMqPublisher;
 
 	public List<Topic> getAllTopics(Boolean sortByName) {
 		
@@ -89,7 +88,7 @@ public class TopicService {
 		
 		Topic savedTopic = topicRepository.save(topic);
 		
-		rabbitMQSender.publishTopicRabbitMQ(savedTopic, ChangeType.Created);
+		topicRabbitMqPublisher.publishTopicRabbitMQ(savedTopic, ChangeType.Created);
 
 		return savedTopic; 
 	}
@@ -101,7 +100,7 @@ public class TopicService {
 
 		Topic updatedTopic = topicRepository.save(topic);
 		
-		rabbitMQSender.publishTopicRabbitMQ(updatedTopic, ChangeType.Updated);
+		topicRabbitMqPublisher.publishTopicRabbitMQ(updatedTopic, ChangeType.Updated);
 		
 		return updatedTopic;
 	}
@@ -113,7 +112,7 @@ public class TopicService {
 
 		topicRepository.delete(id);
 		
-		rabbitMQSender.publishTopicRabbitMQ(deletedTopic, ChangeType.Deleted);
+		topicRabbitMqPublisher.publishTopicRabbitMQ(deletedTopic, ChangeType.Deleted);
 	}
 	
 }

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.agw.springbootstarter.topic.TopicDto;
 import io.agw.springbootstarter.topic.TopicService;
 
 @RestController
@@ -26,8 +25,8 @@ public class CourseController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "")
 	public List<CourseDto> getAllCourses(
-			
-		@RequestParam(required = false, defaultValue = "") final String topicUri) {
+		@RequestParam(required = false, defaultValue = "") final String topicUri)
+	{
 		
 		List<Course> courses = courseService.getAllCourses(topicUri);
 		                                                   
@@ -58,13 +57,13 @@ public class CourseController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public CourseDto updateCourse(@RequestBody CourseDto courseDto, @PathVariable String id) throws Exception {
 		
-		Course courseUpdated = courseService.updateCourse(CourseConverter.toCourseDb(courseDto, topicService));
+		Course courseUpdated = courseService.updateCourse(id, CourseConverter.toCourseDb(courseDto, topicService));
 		
 		return CourseConverter.toCourseDto(courseUpdated);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-	public void deleteTopic(@PathVariable String id) {
+	public void deleteCourse(@PathVariable String id) throws Exception {
 		
 		courseService.deleteCourse(id);
 	}

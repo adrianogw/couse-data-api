@@ -1,11 +1,11 @@
 package io.agw.springbootstarter.rabbitmq;
 
-public class RabbitCredentials {
+public class RabbitCredentialsDto {
 
 	private String login;
 	private String passcode;
 	
-	public RabbitCredentials(String login, String passcode) {
+	public RabbitCredentialsDto(String login, String passcode) {
 		super();
 		this.login = login;
 		this.passcode = passcode;

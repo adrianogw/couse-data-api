@@ -1,46 +1,44 @@
 package io.agw.springbootstarter.rabbitmq;
 
-import org.springframework.stereotype.Component;
-import org.springframework.util.SerializationUtils;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import io.agw.springbootstarter.topic.Topic;
-import io.agw.springbootstarter.topic.TopicDto;
+public abstract class RabbitMQSender<K> {
 
-@Component
-public class RabbitMQSender {
-
-	  private final static String TOPIC_QUEUE_NAME = "queueTopics";
-	  private final static String EXCHANGE_NAME = "amq.topic";
-
-	  public void publishTopicRabbitMQ(Topic topic, ChangeType changeType) throws Exception {
+	  public void publishTopicRabbitMQ(K resource, ChangeType changeType) throws Exception {
 		  
 	    ConnectionFactory factory = new ConnectionFactory();
 	    factory.setHost("localhost");
 	    Connection connection = factory.newConnection();
 	    Channel channel = connection.createChannel();
 
-	    channel.queueDeclare(TOPIC_QUEUE_NAME, true, false, false, null);
+	    channel.queueDeclare(getQueueName(), true, false, false, null);
 
-	    ResourceStateMessage resourceStateMessage = new ResourceStateMessage(TopicDto.generateUri(topic.getId()), changeType);
-	    
         ObjectWriter ow = new ObjectMapper().writer();
-        String json = ow.writeValueAsString(resourceStateMessage);
+        String json = ow.writeValueAsString(getResourceStateMessage(resource, changeType));
         
 	    byte[] message = json.getBytes();
 
-        channel.basicPublish(EXCHANGE_NAME, TOPIC_QUEUE_NAME, null, message);
+	    //Message will leave only 20 seconds. It does not make sense to make the UI consume old messages when started.
+	    AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder().expiration("20000").build();
+	    
+        channel.basicPublish(getExchangeName(), getQueueName(), properties, message);
 	    
 	    System.out.println(" [x] Sent '" + json + "'");
 
 	    channel.close();
 	    connection.close();
 	  }
+	  
+	  public abstract String getQueueName();
+	  
+	  public abstract String getExchangeName();
+	  
+	  public abstract ResourceStateMessage getResourceStateMessage(K resource, ChangeType changeType);
 }
 
 
