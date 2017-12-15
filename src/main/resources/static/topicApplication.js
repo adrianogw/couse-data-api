@@ -6,6 +6,7 @@
 //Simply add a dependency to the 'ui.bootstrap' module coming from ui-bootstrap-tpls-2.5.0.min.
 var helloApp = angular.module( "helloApp", ['ui.bootstrap', 'angular-confirm']);
 
+//It is necessary to disable the cache in order to make the rest calls work on IE.
 helloApp.config(['$httpProvider', function($httpProvider) {
     if (!$httpProvider.defaults.headers.common) {
         $httpProvider.defaults.headers.common = {};
@@ -17,18 +18,25 @@ helloApp.config(['$httpProvider', function($httpProvider) {
 
 helloApp.service('TopicService', [ '$http', function($http) {
 
+	var REST_PATH = 'rest/topics';
+	var REST_API_VERSION = 'application/vnd.agw.api.v1+json';
+	var REST_API_DTO_TYPE = 'TopicDto';
+	
 	this.getTopic = function getTopic(topicId) {
 		return $http({
 			method : 'GET',
-			url : 'topics/' + topicId
+			headers: {'Accept': REST_API_VERSION},
+			url : REST_PATH + '/' +  topicId
 		});
 	}
 
 	this.addTopic = function addTopic(id, name, description) {
 		return $http({
 			method : 'POST',
-			url : 'topics',
+			headers: {'Accept': REST_API_VERSION},
+			url : REST_PATH,
 			data : {
+				type: REST_API_DTO_TYPE,
 				id: id,
 				name : name,
 				description: description
@@ -39,8 +47,10 @@ helloApp.service('TopicService', [ '$http', function($http) {
 	this.updateTopic = function updateTopic(id, name, description) {
 		return $http({
 			method : 'PUT',
-			url : 'topics/' + id,
+			headers: {'Accept': REST_API_VERSION},
+			url : REST_PATH + '/' + id,
 			data : {
+				type: REST_API_DTO_TYPE,
 				id : id,
 				name : name,
 				description: description
@@ -51,14 +61,16 @@ helloApp.service('TopicService', [ '$http', function($http) {
 	this.deleteTopic = function deleteTopic(id) {
 		return $http({
 			method : 'DELETE',
-			url : 'topics/' + id
+			headers: {'Accept': REST_API_VERSION},
+			url : REST_PATH + '/' + id
 		})
 	}  
 
 	this.getAllTopics = function getAllTopics() {
 		return $http({
 			method : 'GET',
-			url : 'topics'
+			headers: {'Accept': REST_API_VERSION},
+			url : REST_PATH
 		});
 	}        
 	
@@ -66,7 +78,8 @@ helloApp.service('TopicService', [ '$http', function($http) {
 		
 		return $http({
 			method : 'GET',
-			url : 'topics/authRabbitMq/' + authToken
+			headers: {'Accept': REST_API_VERSION},
+			url : REST_PATH + '/authRabbitMq/' + authToken
 		});
 	}
 	

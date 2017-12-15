@@ -17,6 +17,7 @@ public class Topic implements Serializable {
 	private String id;
 	private String name;
 	private String description;
+	private String category;
 	
 	public Topic() {
 		
@@ -50,6 +51,14 @@ public class Topic implements Serializable {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 }

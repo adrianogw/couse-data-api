@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.agw.springbootstarter.topic.TopicService;
 
 @RestController
-@RequestMapping("/courses")
+@RequestMapping("/rest/courses")
 public class CourseController {
 
 	@Autowired
@@ -22,8 +22,10 @@ public class CourseController {
 
 	@Autowired
 	private TopicService topicService;
-
-	@RequestMapping(method = RequestMethod.GET, value = "")
+	
+	private static final String API_VERSION_V1 = "application/vnd.agw.api.v1+json"; 
+	
+	@RequestMapping(method = RequestMethod.GET, value = "", produces = API_VERSION_V1)
 	public List<CourseDto> getAllCourses(
 		@RequestParam(required = false, defaultValue = "") final String topicUri)
 	{
@@ -37,16 +39,17 @@ public class CourseController {
 		}
 		
 		return coursesDtoList;
-		
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value="/{id}")
-	public Course getCourse(@PathVariable String id) {
+	@RequestMapping(method = RequestMethod.GET, value="/{id}", produces = API_VERSION_V1)
+	public CourseDto getCourse(@PathVariable String id) {
 		
-		return courseService.getCourse(id);
+		Course course = courseService.getCourse(id);
+		
+		return CourseConverter.toCourseDto(course);
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "")
+	@RequestMapping(method = RequestMethod.POST, value = "", produces = API_VERSION_V1)
 	public CourseDto addCourse(@RequestBody CourseDto courseDto) throws Exception {
 		
 		Course courseSaved = courseService.addCourse(CourseConverter.toCourseDb(courseDto, topicService));
@@ -54,7 +57,7 @@ public class CourseController {
 		return CourseConverter.toCourseDto(courseSaved);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id}", produces = API_VERSION_V1)
 	public CourseDto updateCourse(@RequestBody CourseDto courseDto, @PathVariable String id) throws Exception {
 		
 		Course courseUpdated = courseService.updateCourse(id, CourseConverter.toCourseDb(courseDto, topicService));
@@ -62,7 +65,7 @@ public class CourseController {
 		return CourseConverter.toCourseDto(courseUpdated);
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = API_VERSION_V1)
 	public void deleteCourse(@PathVariable String id) throws Exception {
 		
 		courseService.deleteCourse(id);

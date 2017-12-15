@@ -13,10 +13,14 @@ public class ExceptionResponse implements Serializable{
 	private String recommendedAction;
 	private String details;
  
-    public ExceptionResponse(HttpStatus httpStatus, String message, String recommendedAction, String details) {
+    public ExceptionResponse(HttpStatus httpStatus, String message) {
         super();
         this.httpStatus = httpStatus;
         this.message = message;
+    }
+
+	public ExceptionResponse(HttpStatus httpStatus, String message, String recommendedAction, String details) {
+        this(httpStatus,message);
         this.recommendedAction = recommendedAction;
         this.details = details;
     }
