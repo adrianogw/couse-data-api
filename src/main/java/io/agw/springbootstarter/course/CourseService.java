@@ -67,7 +67,14 @@ public class CourseService {
 		
 		Course savedCourse = courseRepository.save(course);
 		
-		courseRabbitMqPublisher.publishTopicRabbitMQ(savedCourse, ChangeType.Created);
+		try
+		{
+			courseRabbitMqPublisher.publishTopicRabbitMQ(savedCourse, ChangeType.Created);
+		}
+		catch (Exception e)
+		{
+			logger.error("An error occurred when publishing the course to the RabbitMQ during the add operation! Course ID: "+savedCourse.getId(), e);
+		}
 		
 		return savedCourse;
 	}
@@ -79,7 +86,15 @@ public class CourseService {
 		
 		Course updatedCourse = courseRepository.save(course);
 		
-		courseRabbitMqPublisher.publishTopicRabbitMQ(updatedCourse, ChangeType.Updated);
+		try
+		{
+			courseRabbitMqPublisher.publishTopicRabbitMQ(updatedCourse, ChangeType.Updated);
+		}
+		catch (Exception e)
+		{
+			logger.error("An error occurred when publishing the course to the RabbitMQ during the update operation! Course ID: "+id, e);
+		}
+		
 		
 		return updatedCourse;
 	}
@@ -91,7 +106,14 @@ public class CourseService {
 				
 		courseRepository.delete(id);
 		
-		courseRabbitMqPublisher.publishTopicRabbitMQ(deletedCourse, ChangeType.Deleted);
+		try
+		{
+			courseRabbitMqPublisher.publishTopicRabbitMQ(deletedCourse, ChangeType.Deleted);
+		}
+		catch (Exception e)
+		{
+			logger.error("An error occurred when publishing the course to the RabbitMQ during the delete operation! Course ID: "+id, e);
+		}
 		
 	}
 }

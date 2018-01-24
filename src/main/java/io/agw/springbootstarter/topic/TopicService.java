@@ -88,7 +88,15 @@ public class TopicService {
 		
 		Topic savedTopic = topicRepository.save(topic);
 		
-		topicRabbitMqPublisher.publishTopicRabbitMQ(savedTopic, ChangeType.Created);
+		try
+		{
+			topicRabbitMqPublisher.publishTopicRabbitMQ(savedTopic, ChangeType.Created);
+		}
+		catch (Exception e)
+		{
+			logger.error("An error occurred when publishing the topic to the RabbitMQ during the add operation! Topic ID: "+savedTopic.getId(), e);
+		}
+		
 
 		return savedTopic; 
 	}
@@ -100,7 +108,14 @@ public class TopicService {
 
 		Topic updatedTopic = topicRepository.save(topic);
 		
-		topicRabbitMqPublisher.publishTopicRabbitMQ(updatedTopic, ChangeType.Updated);
+		try
+		{
+			topicRabbitMqPublisher.publishTopicRabbitMQ(updatedTopic, ChangeType.Updated);
+		}
+		catch (Exception e)
+		{
+			logger.error("An error occurred when publishing the topic to the RabbitMQ during the update operation! Topic ID: "+id, e);
+		}
 		
 		return updatedTopic;
 	}
@@ -112,7 +127,15 @@ public class TopicService {
 
 		topicRepository.delete(id);
 		
-		topicRabbitMqPublisher.publishTopicRabbitMQ(deletedTopic, ChangeType.Deleted);
+		try
+		{
+			topicRabbitMqPublisher.publishTopicRabbitMQ(deletedTopic, ChangeType.Deleted);
+		}
+		catch (Exception e)
+		{
+			logger.error("An error occurred when publishing the topic to the RabbitMQ during the delete operation! Topic ID: "+id, e);
+		}
+		
 	}
 	
 }
